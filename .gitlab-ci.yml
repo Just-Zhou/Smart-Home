@@ -1,0 +1,18 @@
+stages:
+  - build
+
+build:
+  stage: build
+  image: golang:1.9.2
+  before_script:
+    # Create a symbolic link under $GOPATH, this is needed for local build
+    # i.e. /go/src/gitlab.com/ykyuen/gitlab-ci-go-build
+    - export GOPATH=$GOPATH:/usr/local/${CI_PROJECT_NAME}
+  - export # 引入环境变量
+  - cd /usr/local/${CI_PROJECT_NAME}/src/${CI_PROJECT_NAME}
+  - export VERSION=`echo ${CI_COMMIT_TAG} | awk -F"_" '{print $1}'`
+  script:
+    # Compile and name the binary as `hello`
+    - go build -o hello
+    # Execute the binary
+    - ./hello
